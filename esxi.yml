@@ -1,7 +1,7 @@
 ##Example exec. ansible-playbook esxi.yml -i inventory.ini --ask-vault-pass
 
 ---
-- name: Get collector ip address
+- name: Update standalone VSS shaping
   hosts: esxi
   gather_facts: no
   vars_files:  
@@ -9,7 +9,7 @@
 
   tasks:
 
-    - name: Add Portgroup with all settings defined
+    - name: Modify individual PG shaping
       community.vmware.vmware_portgroup:
         validate_certs: no
         hostname: "{{esxi_hostname}}"

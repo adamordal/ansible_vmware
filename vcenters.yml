@@ -1,13 +1,13 @@
 ##Example exec. ansible-playbook vcenters.yml -i inventory.ini --ask-vault-pass
 
 ---
-- name: Get collector ip address
+- name: Update VCenter Server DVS Shaping
   hosts: vcenters
   gather_facts: no
 
   tasks:
 
-    - name: Create no-vlan portgroup
+    - name: Modify DVS PG shaping
       community.vmware.vmware_dvs_portgroup:
         validate_certs: no
         hostname: '{{ vcenter_hostname }}'
