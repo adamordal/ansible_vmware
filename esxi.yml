@@ -1,8 +1,10 @@
+##Example exec. ansible-playbook esxi.yml -i inventory.ini --ask-vault-pass
+
 ---
 - name: Get collector ip address
   hosts: esxi
   gather_facts: no
-  vars_files:  ##uncomment and update this section to use a vault file for password
+  vars_files:  
     - password.yml
 
   tasks:

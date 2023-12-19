@@ -1,3 +1,5 @@
+##Example exec. ansible-playbook vcenters.yml -i inventory.ini --ask-vault-pass
+
 ---
 - name: Get collector ip address
   hosts: vcenters
