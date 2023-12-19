@@ -1,0 +1,29 @@
+---
+- name: Get collector ip address
+  hosts: esxi
+  gather_facts: no
+  vars_files:  ##uncomment and update this section to use a vault file for password
+    - password.yml
+
+  tasks:
+
+    - name: Add Portgroup with all settings defined
+      community.vmware.vmware_portgroup:
+        validate_certs: no
+        hostname: "{{esxi_hostname}}"
+        username: "{{esxi_username}}"
+        password: "{{esxi_password}}"
+        switch_name: "{{vss_name}}"
+        portgroup: "{{vss_group}}"
+        vlan_id: "{{ vlan }}"
+        hosts:
+          "{{esxi_hostname}}"
+        traffic_shaping:
+            enabled: true
+            average_bandwidth: "{{bandwidth}}"
+            peak_bandwidth: "{{bandwidth}}"
+            burst_size: "{{burst}}"
+
+      delegate_to: localhost
+      register: teaming_result
+

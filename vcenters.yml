@@ -1,0 +1,31 @@
+---
+- name: Get collector ip address
+  hosts: vcenters
+  gather_facts: no
+
+  tasks:
+
+    - name: Create no-vlan portgroup
+      community.vmware.vmware_dvs_portgroup:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        portgroup_name: "{{ port_group }}"
+        switch_name: "{{ dvs_name }}"
+        state: present
+        port_binding: static
+        vlan_id: "{{ vlan }}"
+        in_traffic_shaping:
+          inherited: false
+          enabled: true
+          average_bandwidth: "{{bandwidth}}"
+          peak_bandwidth: "{{bandwidth}}"
+          burst_size: "{{burst}}"
+        out_traffic_shaping:
+          inherited: false
+          enabled: true
+          average_bandwidth: "{{bandwidth}}"
+          peak_bandwidth: "{{bandwidth}}"
+          burst_size: "{{burst}}"
+      delegate_to: localhost
