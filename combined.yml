@@ -1,0 +1,87 @@
+---
+- name: Update standalone VSS shaping
+  hosts: virtualswitch
+  gather_facts: no
+  vars_files:  
+    - password.yml
+
+  tasks:
+
+    - name: Modify individual PG shaping
+      community.vmware.vmware_portgroup:
+        validate_certs: no
+        hostname: "{{ vcenter }}" #vcenter or standalone esxi
+        username: "{{ username }}"
+        password: "{{ password }}"
+        switch_name: "{{vss_name}}"
+        portgroup: "{{vss_group}}"
+        vlan_id: "{{ vlan }}"
+        hosts:
+          "{{esxi_hostname}}"
+        traffic_shaping:
+            enabled: true
+            average_bandwidth: "{{bandwidth}}"
+            peak_bandwidth: "{{bandwidth}}"
+            burst_size: "{{burst}}"
+
+      delegate_to: localhost
+      register: teaming_result
+
+- name: Update VCenter Server DVS Shaping
+  hosts: dvswitch
+  gather_facts: no
+
+  tasks:
+
+    - name: Modify DVS PG shaping
+      community.vmware.vmware_dvs_portgroup:
+        validate_certs: no
+        hostname: '{{ vcenter }}'
+        username: '{{ username }}'
+        password: '{{ password }}'
+        portgroup_name: "{{ port_group }}"
+        switch_name: "{{ dvs_name }}"
+        state: present
+        port_binding: static
+        vlan_id: "{{ vlan }}"
+        in_traffic_shaping:
+          inherited: false
+          enabled: true
+          average_bandwidth: "{{bandwidth}}"
+          peak_bandwidth: "{{bandwidth}}"
+          burst_size: "{{burst}}"
+        out_traffic_shaping:
+          inherited: false
+          enabled: true
+          average_bandwidth: "{{bandwidth}}"
+          peak_bandwidth: "{{bandwidth}}"
+          burst_size: "{{burst}}"
+      delegate_to: localhost
+
+- name: Update standalone VSS shaping
+  hosts: standalone
+  gather_facts: no
+  vars_files:  
+    - password.yml
+
+  tasks:
+
+    - name: Modify individual PG shaping
+      community.vmware.vmware_portgroup:
+        validate_certs: no
+        hostname: "{{esxi_hostname}}" #vcenter or standalone esxi
+        username: "{{username}}"
+        password: "{{password}}"
+        switch_name: "{{vss_name}}"
+        portgroup: "{{vss_group}}"
+        vlan_id: "{{ vlan }}"
+        hosts:
+          "{{esxi_hostname}}"
+        traffic_shaping:
+            enabled: true
+            average_bandwidth: "{{bandwidth}}"
+            peak_bandwidth: "{{bandwidth}}"
+            burst_size: "{{burst}}"
+
+      delegate_to: localhost
+      register: teaming_result
